@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<ui:define name="content">
+    <h1>Products</h1>
+   	<ui:repeat var="_product" value="#{products}">
+   	    <h:graphicImage value="/images/#{_product.image}" width="100" height="100"/>
+   		
+   		<div>
+   			<b>Name: </b>
+	   		<h:outputText value="#{_product.name} "/>
+	   		<br/>
+	   		<b>Summary: </b>
+	   		<h:outputText value="#{_product.summary} "/>
+	   		<br/>
+	   		<b>Market price: </b>
+	   		<h:outputText value="#{_product.marketPrice} "/>	 
+	   		<br/>
+	   		<b>Discount: </b>
+	   		<h:outputText value="#{_product.discount} "/>
+	   		<br/>
+	   		<b>Price: </b>
+	   		<h:outputText value="#{_product.marketPrice * _product.discount}"/>
+	   		<br/>
+	   		<b>Publish date: </b>
+	   		<h:outputText value="#{_product.pubDate}"/>
+	   		<br/>
+	   		<h:form>
+	   		<h:graphicImage value="/images/shoppingcart.gif"/>
+            <a:commandLink id="purchase" action="#{purchaseController.purchase}" value="Add to Cart">
+              <f:param name="pid" value="#{_product.id}" />
+            </a:commandLink>
+            </h:form>
+   		</div>
+   		
+   		<hr/>
+   	</ui:repeat>
+   	<rich:notifyMessages stayTime="2000" nonblocking="true" showDetail="true"/>
+	</ui:define>
+</ui:composition>

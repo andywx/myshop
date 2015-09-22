@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    JBoss, Home of Professional Open Source
+    Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
+    contributors by the @authors tag. See the copyright.txt in the
+    distribution for a full listing of individual contributors.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:a4j="http://richfaces.org/a4j"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:composite="http://java.sun.com/jsf/composite">
+
+<!-- INTERFACE -->
+<composite:interface>
+    <composite:attribute name="product"/>
+</composite:interface>
+
+<!-- IMPLEMENTATION -->
+<composite:implementation>
+    <h:panelGrid columns="3" columnClasses="titleCell">
+    
+        <h:inputHidden id="id" value="#{cc.attrs.product.id}" />
+    
+        <h:outputLabel for="category" value="Category:"/>
+        <h:selectOneMenu id="category" value="#{cc.attrs.product.category}">
+            <f:selectItems value="#{categories}" var="c" itemLabel="#{c.name}" itemValue="#{c}"/>
+            <f:converter converterId = "categoryConverter"/>
+        </h:selectOneMenu>
+        <rich:message for="category" errorClass="invalid"/>
+        
+        <h:outputLabel for="image" value="Image:"/>
+        <h:panelGrid id="image" columns="3" columnClasses="top,top,top">
+            <h:panelGroup layout="block" rendered="#{cc.attrs.product.image != null}">
+                <rich:panel bodyClass="info">
+                    <f:facet name="header">
+                        <h:outputText value="Files Info" />
+                    </f:facet>
+					<h:graphicImage value="/images/#{product.image}" width="100" height="100"/>
+					<br/>
+                    <h:outputText value="#{cc.attrs.product.image}"/>                
+                </rich:panel>
+            </h:panelGroup>
+            <rich:fileUpload fileUploadListener="#{fileUploadBean.listener}"
+                maxFilesQuantity="1"
+                id="upload"
+                immediateUpload="#{fileUploadBean.autoUpload}"
+                acceptedTypes="jpg, gif, png, bmp"
+                ontyperejected="alert('Only JPG, GIF, PNG and BMP files are accepted');">
+                <a4j:ajax event="uploadcomplete" execute="@none" render="info" />
+            </rich:fileUpload>
+            <h:panelGroup id="info" layout="block">
+                <rich:panel bodyClass="info">
+                    <f:facet name="header">
+                        <h:outputText value="Uploaded Files Info" />
+                    </f:facet>
+                    <h:outputText value="No files currently uploaded"
+                        rendered="#{fileUploadBean.size==0}" />
+                    <rich:dataGrid columns="1" value="#{fileUploadBean.files}"
+                        var="file" rowKeyVar="row">
+                        <rich:panel bodyClass="rich-laguna-panel-no-header">
+                            <h:panelGrid columns="2">
+                                <a4j:mediaOutput element="img" mimeType="#{file.mime}"
+                                    createContent="#{fileUploadBean.paint}" value="#{row}"
+                                    style="width:100px; height:100px;" cacheable="false">
+                                    <f:param value="#{fileUploadBean.timeStamp}" name="time"/>  
+                                </a4j:mediaOutput>
+                                <h:panelGrid columns="2">
+                                    <h:outputText value="File Name:" />
+                                    <h:outputText value="#{file.name}" />
+                                    <h:outputText value="File Length(bytes):" />
+                                    <h:outputText value="#{file.length}" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+                        </rich:panel>
+                    </rich:dataGrid>
+                </rich:panel>
+            </h:panelGroup>
+        </h:panelGrid>
+        <rich:message for="image" errorClass="invalid"/>
+        
+        <h:outputLabel for="name" value="Name:"/>
+        <h:inputText id="name" value="#{cc.attrs.product.name}" required="true">
+            <rich:validator/>
+        </h:inputText>
+        <rich:message for="name" errorClass="invalid"/>
+
+        <h:outputLabel for="marketPrice" value="Market Price:"/>
+        <h:inputText id="marketPrice" value="#{cc.attrs.product.marketPrice}" size="10">
+            <rich:validator/>
+        </h:inputText>
+        <rich:message for="marketPrice" errorClass="invalid"/>
+        
+        <h:outputLabel for="isOnSale" value="Is On Sale:"/>
+        <h:selectOneMenu id="isOnSale" value="#{cc.attrs.product.isOnSale}">
+        	<f:selectItem itemLabel="No" itemValue="0"/>
+        	<f:selectItem itemLabel="Yes" itemValue="1"/>
+        	<rich:validator/>
+        </h:selectOneMenu>
+        <rich:message for="isOnSale" errorClass="invalid"/>
+        
+        <h:outputLabel for="discount" value="Discount:"/>
+        <h:inputText id="discount" value="#{cc.attrs.product.discount}" size="10">
+            <rich:validator/>
+        </h:inputText>
+        <rich:message for="discount" errorClass="invalid"/>
+        
+        <h:outputLabel for="pubDate" value="Pub Date:"/>
+        <rich:calendar id="pubDate" value="#{cc.attrs.product.pubDate}">
+            <rich:validator/>
+        </rich:calendar>
+        <rich:message for="pubDate" errorClass="invalid"/>
+        
+        <h:outputLabel for="stockCount" value="Stock Count:"/>
+        <h:inputText id="stockCount" value="#{cc.attrs.product.stockCount}" size="10">
+            <rich:validator/>
+        </h:inputText>
+        <rich:message for="stockCount" errorClass="invalid"/>
+        
+        <h:outputLabel for="saleCount" value="Sale Count:"/>
+        <h:inputText id="saleCount" value="#{cc.attrs.product.saleCount}" size="10">
+            <rich:validator/>
+        </h:inputText>
+        <rich:message for="saleCount" errorClass="invalid"/> 
+        
+        <h:outputLabel for="summary" value="Summary:"/>
+        <h:inputText id="summary" value="#{cc.attrs.product.summary}" size="60">
+            <rich:validator/>
+        </h:inputText>
+        <rich:message for="summary" errorClass="invalid"/>                
+        
+        <h:outputLabel for="detail" value="Detail:"/>
+        <h:inputTextarea  id="detail" value="#{cc.attrs.product.detail}" cols="100" rows="5">
+            <rich:validator/>
+        </h:inputTextarea >
+        <rich:message for="detail" errorClass="invalid"/>
+        
+    </h:panelGrid>
+</composite:implementation>
+</html>

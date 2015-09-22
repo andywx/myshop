@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:my="http://java.sun.com/jsf/composite/components">
+	<ui:define name="content">
+	
+	<h:outputStylesheet name="app.css" library="css"/>
+    <h:outputScript target="head" name="showMessage.js" library="js"/>
+	
+    <h1>Query Products</h1>
+    
+        <h:form id="queryProduct">
+        
+		  <rich:panel id="queryProductPanel" styleClass=".form" header="Add Product" headerClass="header">
+		  	
+		  	<my:queryForm id="queryForm" query="#{queryBean}" />
+		  	
+		  	 <h:panelGrid columns="2">
+                <a4j:commandButton id="query" action="#{queryBean.queryProducts}" value="Query"
+                                   styleClass="register" execute="queryProductPanel" render="queryProductPanel"/>
+                <rich:messages globalOnly="true"/>
+             </h:panelGrid>
+             
+		  </rich:panel>
+		  <br/>
+		  
+	        <rich:collapsiblePanel id="productList" header="Products" headerClass="header" title="Click to expand/collapse">
+	           <rich:dataTable id="productTable" var="_product" value="#{queryBean.productResults}" rendered="#{not empty products}" style="width : 100%">
+	                 <rich:column id="product_id">
+	                    <f:facet name="header">Id</f:facet>
+	                    #{_product.id}
+	                 </rich:column>
+	                 <rich:column id="product_name">
+	                    <f:facet name="header">Name</f:facet>
+	                    #{_product.name}
+	                 </rich:column>
+	                 <rich:column id="product_market_price">
+	                    <f:facet name="header">Market Price</f:facet>
+	                    #{_product.marketPrice}
+	                 </rich:column>
+	                 <rich:column id="product_is_on_sale">
+	                    <f:facet name="header">On Sale</f:facet>
+	                    #{_product.isOnSale}
+	                 </rich:column>
+	                 <rich:column id="product_discount">
+	                    <f:facet name="header">Discount</f:facet>
+	                    #{_product.discount}
+	                 </rich:column>        
+	                 <rich:column id="product_pub_date">
+	                    <f:facet name="header">Pub Date</f:facet>
+	                    #{_product.pubDate}
+	                 </rich:column>  
+	                 <rich:column id="product_stock_count">
+	                    <f:facet name="header">Stock Count</f:facet>
+	                    #{_product.stockCount}
+	                 </rich:column>  
+	                 <rich:column id="product_sale_count">
+	                    <f:facet name="header">Sale Count</f:facet>
+	                    #{_product.saleCount}
+	                 </rich:column>
+	              </rich:dataTable>
+	
+	        </rich:collapsiblePanel>
+	        
+		   	<rich:notifyMessages stayTime="2000" nonblocking="true" showDetail="true"/>
+		   	
+		   	<div id="newMemberMessages" class="update"/>
+		   	
+		   	<a4j:push address="pushCdi" ondataavailable="showMessage(event.rf.data)">
+		        <a4j:ajax event="dataavailable" render="productList" />
+		    </a4j:push>
+    	        
+		</h:form>
+	</ui:define>
+</ui:composition>
