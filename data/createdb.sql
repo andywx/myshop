@@ -297,6 +297,7 @@ DELETE FROM product;
 
 ALTER TABLE product CHANGE image image VARCHAR(200);
 
+
 -- ----------------------------------------
 -- Order status table
 -- ----------------------------------------
